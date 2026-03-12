@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LinkedIn AI Detector</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 290px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+    }
+
+    .header {
+      padding: 14px 16px 10px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-bottom: 1px solid #1e293b;
+    }
+    .header-top { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+    .header-icon { font-size: 20px; }
+    .header h1 { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; color: #f8fafc; }
+    .header p  { font-size: 11px; color: #64748b; }
+
+    /* API Key section */
+    .api-section {
+      padding: 12px 16px;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .api-label {
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .api-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #334155;
+    }
+    .api-status-dot.active { background: #22c55e; }
+
+    .api-input-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .api-input {
+      flex: 1;
+      padding: 6px 10px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #f1f5f9;
+      font-size: 11.5px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .api-input::placeholder { color: #475569; }
+    .api-input:focus { border-color: #6366f1; }
+
+    .api-save-btn {
+      padding: 6px 12px;
+      background: #6366f1;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .api-save-btn:hover { background: #4f46e5; }
+
+    .api-clear-btn {
+      padding: 6px 8px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #94a3b8;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .api-clear-btn:hover { background: #334155; color: #f1f5f9; }
+
+    .api-hint {
+      margin-top: 5px;
+      font-size: 10px;
+      color: #475569;
+      line-height: 1.4;
+    }
+    .api-hint a { color: #818cf8; text-decoration: none; }
+    .api-hint a:hover { text-decoration: underline; }
+
+    /* Stats */
+    .stats { padding: 12px 16px; display: flex; flex-direction: column; gap: 6px; }
+
+    .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 7px;
+      background: #1e293b;
+    }
+
+    .stat-label {
+      font-size: 11.5px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .dot-total  { background: #818cf8; }
+    .dot-high   { background: #ef4444; }
+    .dot-medium { background: #f97316; }
+    .dot-low    { background: #eab308; }
+    .dot-btns   { background: #334155; }
+
+    .stat-value { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; }
+    .value-total  { color: #818cf8; }
+    .value-high   { color: #f87171; }
+    .value-medium { color: #fb923c; }
+    .value-low    { color: #facc15; }
+    .value-btns   { color: #64748b; }
+
+    .divider { height: 1px; background: #1e293b; margin: 0 16px; }
+
+    .controls { padding: 10px 16px 14px; display: flex; flex-direction: column; gap: 8px; }
+
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+    .toggle-label { font-size: 11.5px; color: #94a3b8; }
+
+    .toggle {
+      width: 34px; height: 18px;
+      background: #334155;
+      border-radius: 9px; border: none; cursor: pointer;
+      position: relative; transition: background 0.2s;
+    }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 12px; height: 12px; border-radius: 50%;
+      background: #f8fafc;
+      top: 3px; left: 3px; transition: transform 0.2s;
+    }
+    .toggle.active { background: #6366f1; }
+    .toggle.active::after { transform: translateX(16px); }
+
+    .btn-rescan {
+      width: 100%; padding: 7px;
+      background: #1e293b; border: 1px solid #334155;
+      border-radius: 7px; color: #94a3b8;
+      font-size: 11.5px; font-family: inherit;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .btn-rescan:hover { background: #334155; color: #f1f5f9; }
+
+    .not-linkedin {
+      padding: 22px 16px; text-align: center;
+      color: #64748b; font-size: 12px; line-height: 1.6;
+    }
+    .not-linkedin .big-icon { font-size: 26px; display: block; margin-bottom: 8px; }
+
+    .footer {
+      padding: 7px 16px; text-align: center;
+      font-size: 10px; color: #334155;
+      border-top: 1px solid #1e293b;
+    }
+
+    .saved-msg {
+      font-size: 10.5px;
+      color: #4ade80;
+      margin-top: 4px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .saved-msg.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-top">
+      <span class="header-icon">🤖</span>
+      <h1>LinkedIn AI Detector</h1>
+    </div>
+    <p>Powered by Claude · Per-post analysis</p>
+  </div>
+
+  <!-- API Key -->
+  <div class="api-section">
+    <div class="api-label">
+      <span class="api-status-dot" id="api-dot"></span>
+      Anthropic API Key
+    </div>
+    <div class="api-input-row">
+      <input type="password" class="api-input" id="api-key-input" placeholder="sk-ant-…" autocomplete="off" spellcheck="false" />
+      <button class="api-save-btn" id="api-save-btn">Save</button>
+      <button class="api-clear-btn" id="api-clear-btn" title="Remove key">✕</button>
+    </div>
+    <div class="saved-msg" id="saved-msg">✓ Saved</div>
+    <p class="api-hint">
+      Get yours at <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a> · Stored locally in Chrome only
+    </p>
+  </div>
+
+  <div id="main-content">
+    <div class="stats">
+      <div class="stat-row">
+        <span class="stat-label"><span class="stat-dot dot-btns"></span>Buttons injected</span>
+        <span class="stat-value value-btns" id="stat-buttons">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="stat-dot dot-total"></span>Analyzed (flagged)</span>
+        <span class="stat-value value-total" id="stat-total">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="stat-dot dot-high"></span>Very likely AI</span>
+        <span class="stat-value value-high" id="stat-high">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="stat-dot dot-medium"></span>Probably AI</span>
+        <span class="stat-value value-medium" id="stat-medium">—</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label"><span class="stat-dot dot-low"></span>Possibly AI</span>
+        <span class="stat-value value-low" id="stat-low">—</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="controls">
+      <div class="toggle-row">
+        <span class="toggle-label">Show buttons &amp; badges</span>
+        <button class="toggle active" id="visibility-toggle"></button>
+      </div>
+      <button class="btn-rescan" id="btn-rescan">↻ Rescan current page</button>
+    </div>
+  </div>
+
+  <div id="not-linkedin" style="display:none">
+    <div class="not-linkedin">
+      <span class="big-icon">🔍</span>
+      Navigate to <strong>linkedin.com</strong> to start analyzing posts.
+    </div>
+  </div>
+
+  <div class="footer">Uses claude-haiku · ~$0.001 per analysis</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

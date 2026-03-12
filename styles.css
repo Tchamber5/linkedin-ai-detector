@@ -1,0 +1,185 @@
+/* LinkedIn AI Detector - Injected Styles v2 */
+
+/* ── Analyze button ─────────────────────────────────────────────── */
+.lai-btn-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 4px 0;
+  flex-wrap: wrap;
+}
+
+.lai-analyze-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.4;
+}
+
+.lai-analyze-btn:hover:not(:disabled) {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+  color: #1e293b;
+}
+
+.lai-analyze-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.lai-analyze-btn.lai-has-signals {
+  background: #fefce8;
+  border-color: #fbbf24;
+  color: #92400e;
+}
+
+.lai-analyze-btn.lai-has-signals:hover:not(:disabled) {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.lai-analyze-btn.lai-btn-error {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.lai-btn-icon { font-size: 13px; line-height: 1; }
+
+.lai-err-msg {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 11px;
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+
+/* ── Spinner ────────────────────────────────────────────────────── */
+.lai-spinner {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #cbd5e1;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: lai-spin 0.6s linear infinite;
+}
+
+@keyframes lai-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Result badge ───────────────────────────────────────────────── */
+.lai-badge {
+  display: inline-flex;
+  flex-direction: column;
+  margin: 8px 0 4px 0;
+  border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 12px;
+  overflow: hidden;
+  border: 1.5px solid transparent;
+  max-width: 380px;
+  animation: lai-fadein 0.25s ease;
+}
+
+@keyframes lai-fadein {
+  from { opacity: 0; transform: translateY(-3px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.lai-badge[data-level="human"]  { background: #f0fdf4; border-color: #22c55e; }
+.lai-badge[data-level="high"]   { background: #fff1f1; border-color: #ef4444; }
+.lai-badge[data-level="medium"] { background: #fff7ed; border-color: #f97316; }
+.lai-badge[data-level="low"]    { background: #fefce8; border-color: #eab308; }
+
+.lai-badge-inner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+}
+
+.lai-icon    { font-size: 14px; line-height: 1; }
+
+.lai-label {
+  font-weight: 600;
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  flex: 1;
+}
+
+.lai-badge[data-level="human"]  .lai-label { color: #15803d; }
+.lai-badge[data-level="high"]   .lai-label { color: #b91c1c; }
+.lai-badge[data-level="medium"] .lai-label { color: #c2410c; }
+.lai-badge[data-level="low"]    .lai-label { color: #a16207; }
+
+.lai-confidence {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  margin-left: auto;
+}
+
+.lai-badge[data-level="human"]  .lai-confidence { color: #4ade80; }
+.lai-badge[data-level="high"]   .lai-confidence { color: #f87171; }
+.lai-badge[data-level="medium"] .lai-confidence { color: #fb923c; }
+.lai-badge[data-level="low"]    .lai-confidence { color: #facc15; }
+
+.lai-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0 2px;
+  color: #94a3b8;
+  line-height: 1;
+}
+.lai-toggle:hover { color: #334155; }
+
+.lai-signals {
+  padding: 6px 10px 8px;
+  border-top: 1px solid rgba(0,0,0,0.07);
+  background: rgba(255,255,255,0.55);
+}
+.lai-signals.hidden { display: none; }
+
+.lai-reasoning {
+  margin: 0 0 5px;
+  color: #374151;
+  font-size: 11.5px;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.lai-signals-title {
+  margin: 4px 0 3px;
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.lai-signals ul {
+  margin: 0;
+  padding: 0 0 0 14px;
+}
+
+.lai-signals li {
+  color: #4b5563;
+  font-size: 11px;
+  line-height: 1.5;
+}
